@@ -2,7 +2,7 @@
 -- duplicates it is simply copied into the result list. Only elements with
 -- duplicates are transferred as (N E) lists.
 
-data EncodedElem = Pair (Integer, Char) | SingleItem Char deriving (Show)
+data EncodedElem = Pair (Int, Char) | SingleItem Char deriving (Show)
 
 toEncodedElem nb elem
   | nb == 1   = SingleItem elem
@@ -16,3 +16,16 @@ encode lst = aux [] (head lst) 1 (tail lst)
       if hd == elem
       then aux acc elem (nb + 1) tl
       else aux ((toEncodedElem nb elem) : acc) hd 1 tl
+
+--
+
+pack :: Eq a => [a] -> [[a]]
+pack [] = []
+pack (hd : tl) =
+  let (first, rest) = span (== hd) tl in
+  (hd : first) : pack rest
+
+encode' :: [Char] -> [EncodedElem]
+encode' lst = map aux (pack lst)
+  where
+    aux tpl = toEncodedElem (length tpl) (head tpl)
