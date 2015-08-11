@@ -10,3 +10,10 @@ pack lst = aux [] (head lst : []) (tail lst)
       if hd == (head cur)
       then aux subl (hd : cur) tl
       else aux (cur : subl) (hd : []) tl
+
+pack' :: Eq a => [a] -> [[a]]
+pack' (hd : tl) =
+  let (first, rest) = span (== hd) tl in
+  (hd : first) : pack rest
+
+pack' [] = []
