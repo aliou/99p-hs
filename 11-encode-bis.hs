@@ -2,13 +2,14 @@
 -- duplicates it is simply copied into the result list. Only elements with
 -- duplicates are transferred as (N E) lists.
 
-data EncodedElem = Pair (Int, Char) | SingleItem Char deriving (Show)
+data EncodedElem a = Pair Int a | SingleItem a
+  deriving (Show)
 
 toEncodedElem nb elem
   | nb == 1   = SingleItem elem
-  | otherwise = Pair (nb, elem)
+  | otherwise = Pair nb elem
 
-encode :: [Char] -> [EncodedElem]
+encode :: Eq a => [a] -> [EncodedElem a]
 encode lst = aux [] (head lst) 1 (tail lst)
   where
     aux acc elem nb []        = reverse ((toEncodedElem nb elem) : acc)
@@ -25,7 +26,7 @@ pack (hd : tl) =
   let (first, rest) = span (== hd) tl in
   (hd : first) : pack rest
 
-encode' :: [Char] -> [EncodedElem]
+encode' :: Eq a => [a] -> [EncodedElem a]
 encode' lst = map aux (pack lst)
   where
     aux tpl = toEncodedElem (length tpl) (head tpl)
